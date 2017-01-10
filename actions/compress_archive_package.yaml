@@ -1,5 +1,5 @@
 ---
-    name: 'prepare_archive_package'
+    name: 'compress_archive_package'
     runner_type: 'run-local'
     description: 'Creates a compressed archive of a subset of files inside a runfolder, ready to be sent to PDC with TSM.'
     enabled: true
