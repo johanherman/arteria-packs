@@ -13,7 +13,7 @@
             required: true
             position: 1
         fastq_threshold:
-            type: 'int'
+            type: 'integer'
             description: 'Action will fail if less than this number of fastq files are found'
             required: true
             position: 2
