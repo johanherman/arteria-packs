@@ -340,7 +340,9 @@ workflows:
                   verify_ssl_cert: False
                   irma_mode: True
                on-success:
-                - upload_runfolder_to_pdc
+                - upload_runfolder_to_pdc: <% $.skip_archiving = false %>
+                - notify_finished: <% $.skip_archiving = true %>
+                - mark_as_finished: <% $.skip_archiving = true %>
 
             ### END AEACUS REPORT STEPS ###
             # TODO Need to add starting the ngi pipeline on irma
