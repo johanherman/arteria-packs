@@ -125,6 +125,17 @@ workflows:
                     url: "http://<% $.host %>:<% $.bcl2fastq_service_port %>/api/1.0/start/<% $.runfolder_name %>"
                     timeout: 86400 # Wait for 24 h before timing out.
                     body: <% $.bcl2fastq_body %>
+                on-succes: 
+                    - save_bcl2fastq_version
+
+            # Save the bcl2fastq version that we used in a file inside the runfolder. 
+            # The version is included in stderr from the previous action as JSON bundled
+            # inside a long text string. So first we parse out the dict, and then we fetch 
+            # the field to be saved on disk. 
+            save_bcl2fastq_version: 
+                action: core.local
+                input: 
+                    cmd: ssh <% $.host %> "echo <% task(run_bcl2fastq).stderr %> | cut -d'{' -f2 | cut -d'}' -f1 | python -c \"import ast,sys; payload = [ast.literal_eval('{' + line + '}') for line in sys.stdin][0]; print payload['bcl2fastq_version'] > <% $.runfolder %>/bcl2fastq_version\""                    
                 on-success:
                     - conversionstats_workaround: <% $.conversionstats_swap_read_nr = true %>
                     - download_sisyphus_config: <% $.conversionstats_swap_read_nr = false %>
