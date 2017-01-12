@@ -47,7 +47,6 @@ class PollStatus(Action):
         try:
             response = requests.post(endpoint, json=body, verify=verify_ssl_cert)
             response_json = response.json()
-            self.logger.info("Service accepted our request and responded with payload: {}".format(response_json))
 
             if irma_mode:
                 modified_link = _rewrite_link(response_json['link'])
