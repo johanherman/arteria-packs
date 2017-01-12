@@ -136,7 +136,7 @@ workflows:
             save_bcl2fastq_version: 
                 action: core.local
                 input:
-                    cmd: bash -c "set -o pipefail && echo -e \"<% task(run_bcl2fastq).result.stderr %>\" | cut -d '{' -f2 | cut -d'}' -f1 | python -c \"import ast,sys; payload = ast.literal_eval('{' + sys.stdin.readline() + '}'); print payload['bcl2fastq_version']\" | ssh mm-xart002 \"cat - > <% $.runfolder %>/bcl2fastq_version\""
+                    cmd: bash -c "set -o pipefail && echo -e \"<% task(run_bcl2fastq).result.stderr %>\" | cut -d '{' -f2 | cut -d'}' -f1 | python -c \"import ast,sys; print ast.literal_eval('{' + sys.stdin.readline() + '}')['bcl2fastq_version']\" | ssh <% $.host %> \"cat - > <% $.runfolder %>/bcl2fastq_version\""
                 on-success:
                     - conversionstats_workaround: <% $.conversionstats_swap_read_nr = true %>
                     - download_sisyphus_config: <% $.conversionstats_swap_read_nr = false %>
