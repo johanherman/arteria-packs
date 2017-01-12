@@ -127,7 +127,7 @@ class PollStatus(Action):
 
     def run(self, url, body, sleep, ignore_result, irma_mode, verify_ssl_cert, max_retries=3):
         start_response = self.post_to_endpoint(url, body, irma_mode, verify_ssl_cert) 
-        status_links = start_response['url']
+        status_link = start_response['url']
         status_val, status_response = self.check_status(status_link, sleep, ignore_result, verify_ssl_cert, max_retries)
         return status_val, { "response_from_start": start_response, "response_from_last_status_check": status_response }
 
