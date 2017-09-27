@@ -26,9 +26,9 @@ workflows:
               action: arteria-packs.get_pack_config
               publish:
                 archive_exclude_dirs_biotank: <% task(get_config).result.result.archive_exclude_dirs_biotank %>
-                archive_exclude_dirs_irma: <% task(get_config).result.result.archive_exclude_dirs_irma %>
+                #archive_exclude_dirs_irma: <% task(get_config).result.result.archive_exclude_dirs_irma %>
                 archive_exclude_extensions_biotank: <% task(get_config).result.result.archive_exclude_extensions_biotank %>
-                archive_exclude_extensions_irma: <% task(get_config).result.result.archive_exclude_extensions_irma %>
+                #archive_exclude_extensions_irma: <% task(get_config).result.result.archive_exclude_extensions_irma %>
                 archive_python_path: <% task(get_config).result.result.archive_python_path %>
                 dsmc_port: <% task(get_config).result.result.dsmc_service_port %> 
               on-success:
