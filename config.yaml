@@ -63,10 +63,10 @@ archive_excludes: "\"'^Config|^InterOp|^SampleSheet.csv|^Unaligned|^runParameter
 # Which file entries we should not link to when creating the archive copy of the runfolder 
 #archive_exclude_links: "-e Data -e Thumbnail_Images"
 
-archive_exclude_dirs_biotank: "['Data', 'Thumbnail_Images']"
-archive_exclude_dirs_irma: ""
-archive_exclude_extensions_biotank: ""
-archive_exclude_extensions_irma: "['*.bcl']"
+#archive_exclude_dirs_biotank: "['Data', 'Thumbnail_Images']"
+#archive_exclude_dirs_irma: ""
+#archive_exclude_extensions_biotank: ""
+#archive_exclude_extensions_irma: "['*.bcl']"
 
 # Number of fastq files to expect when creating archive. If we find less files than this 
 # then the action will fail. 
