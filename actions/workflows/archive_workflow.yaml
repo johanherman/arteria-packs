@@ -27,6 +27,7 @@ workflows:
               publish:
                 #archive_python_path: <% task(get_config).result.result.archive_python_path %>
                 dsmc_port: <% task(get_config).result.result.dsmc_service_port %> 
+                archive_exclude_from_tarball: <% task(get_config).result.result.archive_exclude_from_tarball
               on-success:
                 - create_archive_dir
 
@@ -50,7 +51,7 @@ workflows:
                input:
                  host: <% $.host %>
                  runfolder: <% $.runfolder %>_archive
-                 exclude: <% $.archive_excludes %>
+                 exclude: <% $.archive_exclude_from_tarball %>
                on-success:
                  - generate_checksums
 
