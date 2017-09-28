@@ -42,7 +42,7 @@ workflows:
               action: core.http
               input: 
                 url: http://<% $.host %>:<% $.dsmc_port %>/api/1.0/create_dir/<% $.runfolder %>
-                body: '{"remove": "<% $.remove_previous_archive %>", "exclude_dirs": "<% $.archive_exclude_dirs_biotank %>", "exclude_extensions": "<% $.archive_exclude_extensions_biotank %>"}'
+                body: "{'remove': <% $.remove_previous_archive %>, 'exclude_dirs': <% $.archive_exclude_dirs_biotank %>, 'exclude_extensions': <% $.archive_exclude_extensions_biotank %>}"
                 method: "POST"
               on-success: 
                 - compress_tsm_archive    # only for biotank 
