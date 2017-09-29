@@ -27,7 +27,7 @@ workflows:
               publish:
                 #archive_python_path: <% task(get_config).result.result.archive_python_path %>
                 dsmc_port: <% task(get_config).result.result.dsmc_service_port %> 
-                archive_exclude_from_tarball: <% task(get_config).result.result.archive_exclude_from_tarball %>
+                #archive_exclude_from_tarball: <% task(get_config).result.result.archive_exclude_from_tarball %>
               on-success:
                 - create_archive_dir
 
@@ -47,11 +47,16 @@ workflows:
             # Will compress some of the files in the archive. Script will fail if gziped archive already exists. 
             compress_tsm_archive:
                # TODO: call this only when processing on biotanks
-               action: arteria-packs.compress_archive_package
+               #action: arteria-packs.compress_archive_package
+               action: arteria-packs.poll_status
                input:
-                 host: <% $.host %>
-                 runfolder: <% $.runfolder %>_archive
-                 exclude: <% $.archive_exclude_from_tarball %>
+                 url: http://<% $.host %>:<% $.dsmc_port %>/api/1.0/compress_archive/<% $.runfolder %>_archive
+                 verify_ssl_cert: False
+                 irma_mode: False
+                 timeout: 3600 # 1 hr timeout
+                 #host: <% $.host %>
+                 #runfolder: <% $.runfolder %>_archive
+                 #exclude: <% $.archive_exclude_from_tarball %>
                on-success:
                  - generate_checksums
 
