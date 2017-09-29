@@ -47,12 +47,15 @@ workflows:
             # Will compress some of the files in the archive. Script will fail if gziped archive already exists. 
             compress_tsm_archive:
                # TODO: call this only when processing on biotanks
+               # Perhaps we need to poll this
                #action: arteria-packs.compress_archive_package
-               action: arteria-packs.poll_status
+               #action: arteria-packs.poll_status
+               action: core.http
                input:
                  url: http://<% $.host %>:<% $.dsmc_port %>/api/1.0/compress_archive/<% $.runfolder %>_archive
-                 verify_ssl_cert: False
-                 irma_mode: False
+                 method: "POST"
+                 #verify_ssl_cert: False
+                 #irma_mode: False
                  timeout: 3600 # 1 hr timeout
                  #host: <% $.host %>
                  #runfolder: <% $.runfolder %>_archive
@@ -63,14 +66,11 @@ workflows:
                # TODO: Need to call poll.status for checksum (long running)
             generate_checksums:
                 # TODO: call dsmc-ws/checksums service
-                # Perhaps we need to poll? 
-                #action: arteria-packs.poll_status
-                action: core.http
+                action: arteria-packs.poll_status
                 input:
                   url: http://<% $.host %>:<% $.dsmc_port %>/api/1.0/gen_checksums/<% $.runfolder %>_archive
-                  method: "POST"
-                  #verify_ssl_cert: False
-                  #irma_mode: False
+                  verify_ssl_cert: False
+                  irma_mode: False
                   #cmd: ssh <% $.host %> "cd <% $.runfolder %>_archive && find -L . -type f ! -path './checksums_prior_to_pdc.md5' -exec md5sum {} + > checksums_prior_to_pdc.md5"
                   timeout: 86400 # 24 h timeout
                 on-success:
