@@ -1,0 +1,30 @@
+---
+name: archive_missing_files
+description: >
+  Archives missing files from a runfolder to PDC
+enabled: true
+runner_type: mistral-v2
+entry_point: workflows/archive_missing_files.yaml
+pack: arteria-packs
+parameters:
+  context:
+    default: {}
+    immutable: true
+    type: object
+  workflow:
+    default: arteria-packs.archive_missing_files
+    immutable: true
+    type: string
+  host:
+    description: 'Host where archive is located'
+    required: true
+    type: string
+  runfolder:
+    description: 'Name of runfolder/project to re-upload'
+    required: true
+    type: string
+  remove_previous_archive: 
+    description: 'Set to true to remove previous archive if it exists'
+    required: true
+    type: boolean
+    default: false
