@@ -1,6 +1,6 @@
 version: "2.0" # mistral version
-name: arteria-packs.archive_workflow
-description: Archives a runfolder to PDC with TSM
+name: arteria-packs.archive_missing_files
+description: Reuploads missing files from an archive to PDC with TSM
 
 workflows:
     main:
