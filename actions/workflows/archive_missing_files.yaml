@@ -22,6 +22,14 @@ workflows:
                 cmd: git rev-parse HEAD
                 cwd: /opt/stackstorm/packs/arteria-packs/
               on-success:
+                - get_config
+
+            get_config:
+              action: arteria-packs.get_pack_config
+              publish:
+                dsmc_port: <% task(get_config).result.result.dsmc_service_port %> 
+                send_mail_to: <% task(get_config).result.result.send_mail_to %>                
+              on-success:
                 - upload_missing_files_to_pdc
 
             ### GENERAL TASKS END ###
