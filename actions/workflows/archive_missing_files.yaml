@@ -8,13 +8,11 @@ workflows:
         input:
             - runfolder
             - host
-            - remove_previous_archive
         output:
             output_the_whole_workflow_context: <% $ %>
         task-defaults:
             on-error:
                 - oh_shit_error
-                - mark_as_failed            
 
         tasks:
             ### GENERAL TASKS START ###
@@ -24,13 +22,12 @@ workflows:
                 cmd: git rev-parse HEAD
                 cwd: /opt/stackstorm/packs/arteria-packs/
               on-success:
-                - upload_missing_files_to_pdc:
+                - upload_missing_files_to_pdc
 
             ### GENERAL TASKS END ###
 
             ### TRANSFER FILES START ###
             upload_missing_files_to_pdc:
-
                 action: arteria-packs.poll_status
                 input:
                   url: http://<% $.host %>:<% $.dsmc_port %>/api/1.0/reupload/<% $.runfolder %>_archive
