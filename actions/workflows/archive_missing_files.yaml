@@ -28,7 +28,6 @@ workflows:
               action: arteria-packs.get_pack_config
               publish:
                 dsmc_port: <% task(get_config).result.result.dsmc_service_port %> 
-                send_mail_to: <% task(get_config).result.result.send_mail_to %>                
               on-success:
                 - upload_missing_files_to_pdc
 
@@ -42,18 +41,9 @@ workflows:
                   verify_ssl_cert: False
                   irma_mode: False # TODO: support irma as well 
                   timeout: 604800 # 1w worst-case timeout -- TODO: decrease this
-              on-success:
-                  - notify_finished
             ## END TSM ARCHIVE TO PDC ##
 
             ## NOTIFIER START ###
-            notify_finished:
-                action: core.sendmail
-                input:
-                    to: <% $.send_mail_to %>
-                    subject: "'[ARTERIA] - Finished uploading missing files for archive <% $.runfolder %>_archive'"
-                    body: "Finished reupload for <% $.host %> for <% $.runfolder %>_archive"
-
             oh_shit_error:
                 action: core.sendmail
                 input:
@@ -62,5 +52,4 @@ workflows:
                     body: "An oh shit error occurred while reuploading <% $.runfolder %>_archive on host <% $.host %>. Please investigate!"
                 on-complete:
                   - fail
-
             ### NOTIFIER END ###
