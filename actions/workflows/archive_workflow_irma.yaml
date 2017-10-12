@@ -39,7 +39,7 @@ workflows:
               # TODO: how to handle irma?  
               action: core.http
               input: 
-                url: http://<% $.host %>:<% $.irma_base_url_staging %><% $.irma_base_url_staging %>/create_dir/<% $.project %>
+                url: http://<% $.host %>:<% $.irma_staging_port %>/<% $.irma_base_url_staging %>/create_dir/<% $.project %>
                 body: '{"remove": "<% $.remove_previous_archive %>"}'
                 method: "POST"
               on-success:
