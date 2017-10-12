@@ -1,5 +1,5 @@
 version: "2.0" # mistral version
-name: arteria-packs.archive_workflow
+name: arteria-packs.archive_workflow_irma
 description: Archives a runfolder to PDC with TSM
 
 workflows:
