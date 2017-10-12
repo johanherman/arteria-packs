@@ -79,3 +79,5 @@ supr_api_user: apiuser
 supr_api_key: apikey
 supr_api_url: https://disposer.c3se.chalmers.se/supr-test/api
 
+irma_base_url_staging: /arteria_archive_staging/api/1.0/ 
+irma_staging_port: 4444

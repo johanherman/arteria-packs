@@ -1,0 +1,73 @@
+version: "2.0" # mistral version
+name: arteria-packs.archive_workflow
+description: Archives a runfolder to PDC with TSM
+
+workflows:
+    main:
+        type: direct
+        input:
+            - project
+            - host
+            - remove_previous_archive
+        output:
+            output_the_whole_workflow_context: <% $ %>
+
+        tasks:
+            ### GENERAL TASKS START ###
+            note_workflow_repo_version:
+              action: core.local
+              input:
+                cmd: git rev-parse HEAD
+                cwd: /opt/stackstorm/packs/arteria-packs/
+              on-success:
+                - get_config
+
+            get_config:
+              action: arteria-packs.get_pack_config
+              publish:
+                #archive_python_path: <% task(get_config).result.result.archive_python_path %>
+                irma_staging_port: <% task(get_config).result.result.irma_staging_port %> 
+                #archive_exclude_from_tarball: <% task(get_config).result.result.archive_exclude_from_tarball %>
+                irma_base_url_staging: <% task(get_config).result.result.irma_base_url_staging %>
+              on-success:
+                - create_archive_dir
+
+            ### GENERAL TASKS END ###
+
+            ### TRANSFER FILES START ###
+            create_archive_dir:
+              # TODO: how to handle irma?  
+              action: core.http
+              input: 
+                url: http://<% $.host %>:<% $.irma_base_url_staging %><% $.irma_base_url_staging %>/create_dir/<% $.project %>
+                body: '{"remove": "<% $.remove_previous_archive %>"}'
+                method: "POST"
+              on-success:
+                - generate_checksums
+
+               # TODO: Need to call poll.status for checksum (long running)
+            generate_checksums:
+                # TODO: call dsmc-ws/checksums service
+                action: arteria-packs.poll_status
+                input:
+                  url: http://<% $.host %>:<% $.irma_staging_port %>/<% $.irma_base_url_staging %>/gen_checksums/<% $.project %>_archive
+                  verify_ssl_cert: False
+                  irma_mode: True
+                  #cmd: ssh <% $.host %> "cd <% $.runfolder %>_archive && find -L . -type f ! -path './checksums_prior_to_pdc.md5' -exec md5sum {} + > checksums_prior_to_pdc.md5"
+                  timeout: 86400 # 24 h timeout
+                on-success:
+                  - tsm_archive_to_pdc
+
+            # We need to filter out all files excluded from the upload because otherwise TSM
+            # will fill up the Stackstorm/Mongo buffer too much. 
+            tsm_archive_to_pdc:
+                # TODO: Call dsmc-ws/upload service 
+                action: arteria-packs.poll_status
+                input:
+                  url: http://<% $.host %>:<% $.irma_staging_port %>/<% $.irma_base_url_staging %>/upload/<% $.project %>_archive
+                  verify_ssl_cert: False
+                  irma_mode: True 
+                  #cmd: ssh <% $.host %> "dsmc archive <% $.runfolder %>_archive/ -subdir=yes -description=`uuidgen`"
+                  timeout: 604800 # 1w worst-case timeout
+
+            ### TRANSFER FILES END ###
