@@ -15,10 +15,6 @@ parameters:
     default: arteria-packs.archive_missing_files_irma
     immutable: true
     type: string
-  host:
-    description: 'Host where archive is located'
-    required: true
-    type: string
   project:
     description: 'Name of project to re-upload'
     required: true

@@ -15,10 +15,6 @@ parameters:
     default: arteria-packs.archive_workflow_irma
     immutable: true
     type: string
-  host:
-    description: 'Host where project is located'
-    required: true
-    type: string
   project:
     description: 'Path to project to archive'
     required: true
