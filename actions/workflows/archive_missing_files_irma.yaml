@@ -38,7 +38,7 @@ workflows:
             upload_missing_files_to_pdc:
                 action: arteria-packs.poll_status
                 input:
-                  url: <% $.irma_archive_base_url_staging %>/reupload/<% $.project %>_archive?<% $.irma_api_key %>
+                  url: <% $.irma_archive_base_url_staging %>/reupload/<% $.project %>_archive?apikey=<% $.irma_api_key %>
                   verify_ssl_cert: False
                   irma_mode: True # TODO: support irma as well 
                   timeout: 604800 # 1w worst-case timeout -- TODO: decrease this
