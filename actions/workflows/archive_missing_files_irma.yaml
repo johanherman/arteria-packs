@@ -28,7 +28,8 @@ workflows:
               action: arteria-packs.get_pack_config
               publish:
                 irma_staging_port: <% task(get_config).result.result.irma_staging_port %>
-                irma_base_url_staging: <% task(get_config).result.result.irma_base_url_staging %> 
+                irma_base_url_staging: <% task(get_config).result.result.irma_base_url_staging %>
+                irma_api_key: <% task(get_config).result.result.irma_api_key %> 
               on-success:
                 - upload_missing_files_to_pdc
 
@@ -38,7 +39,7 @@ workflows:
             upload_missing_files_to_pdc:
                 action: arteria-packs.poll_status
                 input:
-                  url: https://<% $.host %>:<% $.dsmc_port %>/<% $.irma_base_url_staging %>/reupload/<% $.project %>_archive
+                  url: https://<% $.host %>:<% $.dsmc_port %>/<% $.irma_base_url_staging %>/reupload/<% $.project %>_archive?<% $.irma_api_key %>
                   verify_ssl_cert: False
                   irma_mode: True # TODO: support irma as well 
                   timeout: 604800 # 1w worst-case timeout -- TODO: decrease this

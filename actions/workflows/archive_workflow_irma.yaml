@@ -29,6 +29,7 @@ workflows:
                 irma_staging_port: <% task(get_config).result.result.irma_staging_port %> 
                 #archive_exclude_from_tarball: <% task(get_config).result.result.archive_exclude_from_tarball %>
                 irma_base_url_staging: <% task(get_config).result.result.irma_base_url_staging %>
+                irma_api_key: <% task(get_config).result.result.irma_api_key %>
               on-success:
                 - create_archive_dir
 
@@ -39,7 +40,7 @@ workflows:
               # TODO: how to handle irma?  
               action: core.http
               input: 
-                url: https://<% $.host %>:<% $.irma_staging_port %>/<% $.irma_base_url_staging %>/create_dir/<% $.project %>
+                url: https://<% $.host %>:<% $.irma_staging_port %>/<% $.irma_base_url_staging %>/create_dir/<% $.project %>?apikey=<% $.irma_api_key %>
                 body: '{"remove": "<% $.remove_previous_archive %>"}'
                 method: "POST"
               on-success:
@@ -50,7 +51,7 @@ workflows:
                 # TODO: call dsmc-ws/checksums service
                 action: arteria-packs.poll_status
                 input:
-                  url: https://<% $.host %>:<% $.irma_staging_port %>/<% $.irma_base_url_staging %>/gen_checksums/<% $.project %>_archive
+                  url: https://<% $.host %>:<% $.irma_staging_port %>/<% $.irma_base_url_staging %>/gen_checksums/<% $.project %>_archive?apikey=<% $.irma_api_key %>
                   verify_ssl_cert: False
                   irma_mode: True
                   #cmd: ssh <% $.host %> "cd <% $.runfolder %>_archive && find -L . -type f ! -path './checksums_prior_to_pdc.md5' -exec md5sum {} + > checksums_prior_to_pdc.md5"
@@ -64,7 +65,7 @@ workflows:
                 # TODO: Call dsmc-ws/upload service 
                 action: arteria-packs.poll_status
                 input:
-                  url: https://<% $.host %>:<% $.irma_staging_port %>/<% $.irma_base_url_staging %>/upload/<% $.project %>_archive
+                  url: https://<% $.host %>:<% $.irma_staging_port %>/<% $.irma_base_url_staging %>/upload/<% $.project %>_archive?apikey=<% $.irma_api_key %>
                   verify_ssl_cert: False
                   irma_mode: True 
                   #cmd: ssh <% $.host %> "dsmc archive <% $.runfolder %>_archive/ -subdir=yes -description=`uuidgen`"
