@@ -32,17 +32,28 @@ workflows:
                 archive_verify_base_url: <% task(get_config).result.result.archive_verify_base_url %>
                 archive_status_slack_channel: <% task(get_config).result.result.archive_status_slack_channel %>
               on-success:
-                - verify_archive_dir
+                - construct_poller_body
 
             ### GENERAL TASKS END ###
 
             ### TSM ARCHIVE VERIFY START ###
 
+            construct_poller_body: 
+              action: arteria-packs.parse_archive_verify_args
+              input:
+                archive: <% $.archive %>
+                description: <% $.description %>
+                host: <% $.host %>
+              publish:
+                verify_body: <% task(construct_poller_body).result.result %>
+              on-success:
+                - verify_archive_dir 
+
             verify_archive_dir: 
              action: arteria-packs.poll_status-archive
              input:
                url: <% $.archive_verify_base_url %>/verify
-               body: '{"archive": "<% $.archive %>", "host": "<% $.host %>", "description": "<% $.description %>"}'
+               body: <% $.verify_body %>
                verify_ssl_cert: True
                irma_mode: False
                timeout: 86400 # 24h timeout

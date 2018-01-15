@@ -1,0 +1,22 @@
+---
+name: parse_archive_verify_args
+runner_type: python-script
+description: Parses archive verify args to json
+enabled: true
+entry_point: lib/parse_arguments_to_json.py
+parameters:
+
+  archive:
+    default: ""
+    type: string
+    description: "Name of runfolder archive uploaded."
+
+  description:
+    default: ""
+    type: string
+    description: "Unique description used when uploading the archive."
+
+  host:
+    default: ""
+    type: string
+    description: "Host from where the archive was uploaded." 
