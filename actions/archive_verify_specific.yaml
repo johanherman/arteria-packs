@@ -1,0 +1,34 @@
+---
+name: archive_verify_specific
+description: >
+  Verifies the checksums for a specific runfolder archive that has been uploaded to PDC
+enabled: true
+runner_type: mistral-v2
+entry_point: workflows/archive_verify_specific.yaml
+pack: arteria-packs
+parameters:
+  context:
+    default: {}
+    immutable: true
+    type: object
+  workflow:
+    default: arteria-packs.archive_verify_specific
+    immutable: true
+    type: string
+  host:
+    description: 'Host from where archive was uploaded'
+    required: true
+    type: string
+  archive:
+    description: 'Archive to verify'
+    required: true
+    type: string
+  description: 
+    description: 'Unique description used when uploading archive to PDC'
+    required: true
+    type: string
+#  remove_previous_archive:
+#    description: 'Set to true to remove previous archive'
+#    required: true
+#    type: boolean
+#    default: false
