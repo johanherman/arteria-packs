@@ -58,6 +58,8 @@ workflows:
                verify_ssl_cert: True
                irma_mode: False
                timeout: 86400 # 24h timeout
+             publish: 
+               archive_path: <% task(verify_archive_dir).result.result.response_from_start.response.path %>
              on-success:
                - mark_verify_ok_in_db 
 
@@ -65,9 +67,19 @@ workflows:
                 action: core.http
                 input:
                   url: <% $.archive_db_base_url %>/verification
-                  body: '{ "description": "<% $.description %>" }'
+                  body: '{ "description": "<% $.description %>", "host": "<% $.host %>", "path": "<% $.archive_path %>" }'
                   method: "POST"
                   timeout: 60
+                on-success: 
+                  - notify_success_on_slack
+               
+            notify_success_on_slack: 
+              action: arteria-packs.post_to_slack
+              input:
+                user: "I, Archivian"
+                emoji_icon: ":robot_face:"
+                channel: <% $.archive_status_slack_channel %>
+                message: "Successfully verified MD5 sums for archive `<% $.archive_path %>`. See details with `st2 execution get <% env().st2_execution_id %>`"
 
             ### END TSM ARCHIVE VERIFY ###
 
