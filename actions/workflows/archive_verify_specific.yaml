@@ -38,26 +38,37 @@ workflows:
 
             ### TSM ARCHIVE VERIFY START ###
 
-            verify_archive_dir:
-              action: core.http
-              input:
-                url: <% $.archive_verify_base_url %>/verify
-                body: '{"archive": "<% $.archive %>", "host": "<% $.host %>", "description": "<% $.description %>"}'
-                method: "POST"
-              publish: 
-                verify_job_id: <% task(verify_archive_dir).result.body.job_id %>
-              on-success:
-                - check_verify_status
+            verify_archive_dir: 
+             action: arteria-packs.poll_status-archive
+             input:
+               url: <% $.archive_verify_base_url %>/verify
+               body: '{"archive": "<% $.archive %>", "host": "<% $.host %>", "description": "<% $.description %>"}'
+               method: "POST"
+               verify_ssl_cert: True
+               irma_mode: False
+               timeout: 86400 # 24h timeout
+             on-success:
+               - mark_verify_ok_in_db 
+        #    verify_archive_dir:
+        #      action: core.http
+        #      input:
+        #        url: <% $.archive_verify_base_url %>/verify
+        #        body: '{"archive": "<% $.archive %>", "host": "<% $.host %>", "description": "<% $.description %>"}'
+        #        method: "POST"
+        #      publish: 
+        #        verify_job_id: <% task(verify_archive_dir).result.body.job_id %>
+        #      on-success:
+        #        - check_verify_status
 
-            check_verify_status:
-                action: arteria-packs.poll_status-archive
-                input:
-                  url: <% $.archive_verify_base_url %>/status/<% $.verify_job_id %>
-                  verify_ssl_cert: True
-                  irma_mode: False
-                  timeout: 86400 # 24 h timeout
-                on-success:
-                  - mark_verify_ok_in_db
+        #            check_verify_status:
+        #        action: arteria-packs.poll_status-archive
+        #        input:
+        #          url: <% $.archive_verify_base_url %>/status/<% $.verify_job_id %>
+        #          verify_ssl_cert: True
+        #          irma_mode: False
+        #          timeout: 86400 # 24 h timeout
+        #        on-success:
+        #          - mark_verify_ok_in_db
 
             mark_verify_ok_in_db:
                 action: core.http
