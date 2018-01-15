@@ -77,7 +77,7 @@ workflows:
                  user: 'I, Archivian'
                  emoji_icon: ':robot_face:'
                  channel: <% $.archive_status_slack_channel %>
-                 message: 'Unfortunately an error occurred when trying to archive `<% $.runfolder %>`. You can see more details by running: `st2 execution get <% env().st2_execution_id %>`'
+                 message: 'Unfortunately an error occurred when trying to verify archive `<% $.archive %>` uploaded from `<% $.host %>`. You can see more details by running: `st2 execution get <% env().st2_execution_id %>`'
                on-complete:
                  - fail
 
