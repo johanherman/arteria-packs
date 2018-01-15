@@ -43,7 +43,6 @@ workflows:
              input:
                url: <% $.archive_verify_base_url %>/verify
                body: '{"archive": "<% $.archive %>", "host": "<% $.host %>", "description": "<% $.description %>"}'
-               method: "POST"
                verify_ssl_cert: True
                irma_mode: False
                timeout: 86400 # 24h timeout
