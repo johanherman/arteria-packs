@@ -39,7 +39,7 @@ workflows:
             get_random_archive_to_verify: 
               action: core.http
               input: 
-                url: <% archive_verify_base_url %>/randomarchive
+                url: <% $.archive_verify_base_url %>/randomarchive
                 body: '{"safety_margin": "<% $.archive_safety_margin %>", "age": "<% $.archive_lookback_window %>"}'
                 method: "POST"
                 timeout: 30
