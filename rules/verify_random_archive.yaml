@@ -1,0 +1,18 @@
+---
+name: "arteria-packs.verify_random_archive"
+pack: "arteria-packs"
+description: "Verifies MD5sums for a randomly chosen, uploaded and unverified archive."
+enabled: true
+
+trigger:
+    type: "core.st2.CronTimer"
+    parameters:
+      timezone: "UTC"
+      day_of_week: "sun"
+      hour: 22
+      minute: 30
+      second: 0
+
+action:
+    ref: "arteria-packs.archive_verify_random"
+
