@@ -45,7 +45,7 @@ workflows:
               publish: 
                 archive_name: <% task(get_random_archive_to_verify).result.body.archive.archive %>
                 archive_host: <% task(get_random_archive_to_verify).result.body.archive.host %>
-                archive_description: <% task(get_random_archive_to_verify).result.body.description %>
+                archive_description: <% task(get_random_archive_to_verify).result.body.archive.description %>
               on-success:
                 - verify_archive
 
