@@ -1,0 +1,74 @@
+version: "2.0" # mistral version
+name: arteria-packs.archive_verify_random
+description: Verify a randomly picked runfolder archive that was uploaded to PDC. Supposed to be run each week. Picks a runfolder that has not been verified previously, and was uploaded within the interval [1 week ago, yesterday].  
+
+workflows:
+    main:
+        type: direct
+        output:
+            output_the_whole_workflow_context: <% $ %>
+        task-defaults:
+          on-error:
+            - notify_failure_on_slack
+
+        tasks:
+            ### GENERAL TASKS START ###
+            note_workflow_repo_version:
+              action: core.local
+              input:
+                cmd: git rev-parse HEAD
+                cwd: /opt/stackstorm/packs/arteria-packs/
+              on-success:
+                - get_config
+
+            get_config:
+              action: arteria-packs.get_pack_config
+              publish:
+                archive_verify_base_url: <% task(get_config).result.result.archive_verify_base_url %>
+                archive_status_slack_channel: <% task(get_config).result.result.archive_status_slack_channel %>
+                archive_db_base_url: <% task(get_config).result.result.archive_db_base_url %>
+                archive_safety_margin: <% task(get_config).result.result.archive_db_verify_safety_margin %>
+                archive_lookback_window: <% task(get_config).result.result.archive_db_verify_lookback_window %>
+              on-success:
+                - get_random_archive_to_verify
+
+            ### GENERAL TASKS END ###
+
+            ### TSM ARCHIVE VERIFY START ###
+
+            get_random_archive_to_verify: 
+              action: core.http
+              input: 
+                url: <% archive_verify_base_url %>/randomarchive
+                body: '{"safety_margin": "<% $.archive_safety_margin %>", "age": "<% $.archive_lookback_window %>"}'
+                method: "POST"
+                timeout: 30
+              publish: 
+                archive_name: <% task(get_random_archive_to_verify).result.body.archive.archive %>
+                archive_host: <% task(get_random_archive_to_verify).result.body.archive.host %>
+                archive_description: <% task(get_random_archive_to_verify).result.body.description %>
+              on-success:
+                - verify_archive
+
+            verify_archive: 
+              action: arteria-packs.archive_verify_specific
+              input: 
+                archive: <% $.archive_name %>
+                host: <% $.archive_host %>
+                description: <% $.archive_description %>
+
+            ### END TSM ARCHIVE VERIFY ###
+
+            ## NOTIFIER START ###
+
+            notify_failure_on_slack:
+               action: arteria-packs.post_to_slack
+               input:
+                 user: 'I, Archivian'
+                 emoji_icon: ':robot_face:'
+                 channel: <% $.archive_status_slack_channel %>
+                 message: 'Unfortunately an error occurred when trying to verify archive `<% $.archive %>` uploaded from `<% $.host %>`. You can see more details by running: `st2 execution get <% env().st2_execution_id %>`'
+               on-complete:
+                 - fail
+
+            ### NOTIFIER END ###

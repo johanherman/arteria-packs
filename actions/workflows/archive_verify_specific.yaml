@@ -9,7 +9,6 @@ workflows:
             - archive
             - description
             - host
-              #            - remove_previous_archive
         output:
             output_the_whole_workflow_context: <% $ %>
         task-defaults:

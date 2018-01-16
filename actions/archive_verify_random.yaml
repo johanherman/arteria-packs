@@ -1,0 +1,17 @@
+---
+name: archive_verify_random
+description: >
+  Verifies the checksums for a randomly picked runfolder archive that has been uploaded to PDC. The choice is made among all the nonverified archives that has been uploaded within a specific time window. 
+enabled: true
+runner_type: mistral-v2
+entry_point: workflows/archive_verify_random.yaml
+pack: arteria-packs
+parameters:
+  context:
+    default: {}
+    immutable: true
+    type: object
+  workflow:
+    default: arteria-packs.archive_verify_random
+    immutable: true
+    type: string

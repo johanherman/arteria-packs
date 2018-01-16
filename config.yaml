@@ -35,6 +35,16 @@ archive_db_base_url: http://mm-xart002:10500/api/1.0/
 delivery_service_url: http://some-host.com:9999/
 archive_verify_base_url: http://mm-xart002:10400/api/1.0/
 
+# Number of days we want to look back when picking an unverified but
+# uploaded archive. The exact time period will be adjusted by the safety
+# margin setting as well though.
+archive_db_verify_lookback_window: 7
+
+# Safety margin (days) when checking for an unverified but uploaded archive.
+# The margin is meant to ensure that we're not verifying something that PDC 
+# still keeps on disk - instead it should have been flushed to tape.
+archive_db_verify_safety_margin: 3
+
 irma_replace_expressions:
  - 's/UPPNEX_PROJECT: a2009002/UPPNEX_PROJECT: ngi2016001/'
  - 's/UPPNEX_QOS: seqver/#UPPNEX_QOS: seqver/'

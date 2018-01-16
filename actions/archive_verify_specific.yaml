@@ -27,8 +27,3 @@ parameters:
     description: 'Unique description used when uploading archive to PDC'
     required: true
     type: string
-#  remove_previous_archive:
-#    description: 'Set to true to remove previous archive'
-#    required: true
-#    type: boolean
-#    default: false
